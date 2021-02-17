@@ -2,7 +2,7 @@ Support pretty print STL and variables in ClickHouse
 
 # How to use it?
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
-2. Create a `~/.gdbinit` file and put these lines in it:
+2. Create a `~/.gdbinit` file and put these lines in it, or just `mv gdbinit ~/.gdbinit`
 
 ```
 python
@@ -12,9 +12,8 @@ from printers import register_ch_printers
 register_ch_printers()
 end
 ```
-or just `mv gdbinit ~/.gdbinit`
 
-the .gdbinit file will make gdb register libcxx pretty printer, libcxx pretty printer  and ClickHouse pretty printer when gdb started.
+Note: the .gdbinit file will make gdb register libcxx pretty printer, libcxx pretty printer  and ClickHouse pretty printer when gdb started.
 
 3. Run gdb and type `info pretty-printer`. You should see something like that:
 
@@ -28,7 +27,10 @@ global pretty-printers:
   libstdc++-v6
     ...
 ```
+
 <br>
+
+
 # What does it do?
 
 Adds some nice representation of ClickHouse's internal data structures in GDB. 
@@ -64,8 +66,10 @@ long, unsigned long, DB::IndexToOne, false> of length 50, capacity 97 =
 
 
 
-## Note
-You can write your own pretty printer for some clickhouse classes
+Note: 
+* You can write your own pretty printer for some clickhouse classes
+* If you want to know an IAST's real type, use `info vtbl ast` (here ast is an IAST type var)
+
 
 <br>
 
