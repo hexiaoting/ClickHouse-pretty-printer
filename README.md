@@ -3,7 +3,8 @@ Support pretty print STL and variables in ClickHouse
 # How to use it?
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
 2. Recompile `programs/clickhouse` to add `-Wl,--whole-archive src/Parsers/libclickhouse_parsersd.a -Wl,--no-whole-archive` instead of `src/Parsers/libclickhouse_parsersd.a`
-   otherwise we cannot get sql of an IAST
+   otherwise we cannot get sql of an IAST.
+   Note: No `-Wl,--gdb-index -Wl,--build-id=sha1 -Wl,--no-undefined -Wl,-no-pie ` options in the compile command.
 3. Create a `~/.gdbinit` file and put these lines in it, or just `(gdb) source $DIR/gdbinit`
 
 ```
