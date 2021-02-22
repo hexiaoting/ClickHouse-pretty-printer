@@ -2,7 +2,9 @@ Support pretty print STL and variables in ClickHouse
 
 # How to use it?
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
-2. Create a `~/.gdbinit` file and put these lines in it, or just `mv gdbinit ~/.gdbinit`
+2. Recompile `programs/clickhouse` to add `-Wl,--whole-archive src/Parsers/libclickhouse_parsersd.a -Wl,--no-whole-archive` instead of `src/Parsers/libclickhouse_parsersd.a`
+   otherwise we cannot get sql of an IAST
+3. Create a `~/.gdbinit` file and put these lines in it, or just `(gdb) source $DIR/gdbinit`
 
 ```
 python
@@ -35,7 +37,12 @@ global pretty-printers:
 
 Adds some nice representation of ClickHouse's internal data structures in GDB. 
 
-For example, when printing the `DB::PaddedPODArray`'s contents, instead of
+For example, when printing the `DB::IAST`'s contents, you can get the type of ast and the sql:
+```
+(gdb) p *ast                                                                                                           │           q
+type=ASTSelectWithUnionQuery, sql="SELECT 1"
+```
+when printing the `DB::PaddedPODArray`'s contents, instead of
 
 ```
 $1 = (DB::PaddedPODArray<DB::ArrayIndexNumImpl<unsigned long, unsigned long, DB::Index
@@ -68,7 +75,6 @@ long, unsigned long, DB::IndexToOne, false> of length 50, capacity 97 =
 
 Note: 
 * You can write your own pretty printer for some clickhouse classes
-* If you want to know an IAST's real type, use `info vtbl ast` (here ast is an IAST type var)
 
 
 <br>
