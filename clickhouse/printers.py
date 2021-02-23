@@ -5,6 +5,8 @@ from typing import List, Dict, Tuple
 from PODArray import PODArrayPrinter
 from ColumnArray import ColumnArrayPrinter
 from IAST import IASTPrinter
+from IColumn import IColumnPrinter
+from IDataType import IDataTypePrinter
 
 
 def print_icolumn_type(col: gdb.Value) -> str:
@@ -66,6 +68,8 @@ def build_pretty_printers():
 
     pp.add_printer('ColumnArray', '^DB::ColumnArray$', ColumnArrayPrinter)
     pp.add_printer('IAST', '^DB::IAST$', IASTPrinter)
+    pp.add_printer('IColumn', '^DB::IColumn$', IColumnPrinter)
+    pp.add_printer('IDataType', '^DB::IDataType$', IDataTypePrinter)
 
     return pp
 
