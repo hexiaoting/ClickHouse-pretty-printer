@@ -21,16 +21,7 @@ $2 = <incomplete type>
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
 2. Recompile `programs/clickhouse` to remove `-Wl,--gdb-index` options in the compile command.
 3. `gdb-add-index programs/clickhouse` to generate .gdb_index section in ELF.
-4. Create a `~/.gdbinit` file and copy file gdbinit content into it, or just `(gdb) source $DIR/gdbinit`
-
-```
-python
-import sys
-sys.path.insert(0, '/full/path/to/repo')
-from printers import register_ch_printers
-register_ch_printers()
-end
-```
+4. `mv gdbinit ~/.gdbinit` 
 
 Note: the .gdbinit file will make gdb register libcxx pretty printer, libcxx pretty printer  and ClickHouse pretty printer when gdb started.
 
