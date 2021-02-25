@@ -1,5 +1,22 @@
 Support pretty print STL and variables in ClickHouse
 
+# 0. Prerequisite
+To generate full debug info using clang, we should add option `-fno-limit-debug-info`. My cmake command:
+```
+$ git clone --recursive https://github.com/ClickHouse/ClickHouse.git
+$ cd ClickHouse
+$ mkdir build
+$ cd build
+$ cmake ../src/ -DENABLE_TESTS=0 -DCLICKHOUSE_SPLIT_BINARY=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fno-limit-debug-info" -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_EXE_LINKER_FLAGS="-Wl,--dynamic-linker,/lib64/ld-linux-x86-64.so.2"
+```
+otherwise when gdb print types defined in Clickhouse shows:
+```
+(gdb) p col_array
+$1 = (const DB::ColumnArray *) 0x7fff0527e100
+(gdb) p *col_array
+$2 = <incomplete type>
+```
+
 # 1. How to use it?
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
 2. Recompile `programs/clickhouse` to remove `-Wl,--gdb-index` options in the compile command.
@@ -17,7 +34,7 @@ end
 
 Note: the .gdbinit file will make gdb register libcxx pretty printer, libcxx pretty printer  and ClickHouse pretty printer when gdb started.
 
-3. Run gdb and type `info pretty-printer`. You should see something like that:
+5. Run gdb and type `info pretty-printer`. You should see something like that:
 
 ```
 (gdb) info pretty-printer 
