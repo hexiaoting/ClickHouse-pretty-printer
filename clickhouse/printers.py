@@ -4,6 +4,8 @@ from typing import List, Dict, Tuple
 
 from PODArray import PODArrayPrinter
 from ColumnArray import ColumnArrayPrinter
+from ASTSelectQuery import ASTSelectQueryPrinter
+from ASTSelectWithUnionQuery import ASTSelectWithUnionQueryPrinter
 from IAST import IASTPrinter
 from IColumn import IColumnPrinter
 from IDataType import IDataTypePrinter
@@ -67,6 +69,8 @@ def build_pretty_printers():
     pp.add_printer('PaddedPODArray', '^DB::PaddedPODArray<.*>$', PODArrayPrinter)
 
     pp.add_printer('ColumnArray', '^DB::ColumnArray$', ColumnArrayPrinter)
+    pp.add_printer('ASTSelectQuery', '^DB::ASTSelectQuery$', ASTSelectQueryPrinter)
+    pp.add_printer('ASTSelectWithUnionQuery', '^DB::ASTSelectWithUnionQuery$', ASTSelectWithUnionQueryPrinter)
     pp.add_printer('IAST', '^DB::IAST$', IASTPrinter)
     pp.add_printer('IColumn', '^DB::IColumn$', IColumnPrinter)
     pp.add_printer('IDataType', '^DB::IDataType$', IDataTypePrinter)
