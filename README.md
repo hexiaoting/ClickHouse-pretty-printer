@@ -1,13 +1,13 @@
 Support pretty print STL and variables in ClickHouse
 
 # 0. Prerequisite
-To generate full debug info using clang, we should add option `-fno-limit-debug-info`. My cmake command:
+To generate full debug info using clang, we should add option `-fno-limit-debug-info`. And to get full valid .gdb_index section, we should add option `-ggnu-pubnames`. My cmake command:
 ```
 $ git clone --recursive https://github.com/ClickHouse/ClickHouse.git
 $ cd ClickHouse
 $ mkdir build
 $ cd build
-$ cmake ../src/ -DENABLE_TESTS=0 -DCLICKHOUSE_SPLIT_BINARY=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fno-limit-debug-info" -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_EXE_LINKER_FLAGS="-Wl,--dynamic-linker,/lib64/ld-linux-x86-64.so.2"
+$ cmake ../src/ -DENABLE_TESTS=0 -DCLICKHOUSE_SPLIT_BINARY=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-ggnu-pubnames -fno-limit-debug-info" -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_EXE_LINKER_FLAGS="-Wl,--dynamic-linker,/lib64/ld-linux-x86-64.so.2"
 ```
 otherwise when gdb print types defined in Clickhouse shows:
 ```
@@ -19,13 +19,11 @@ $2 = <incomplete type>
 
 # 1. How to use it?
 1. Install gdb and verify that it supports Python scripting (invoke `gdb --version` and check for `--with-python=...` lines).
-2. Recompile `programs/clickhouse` to remove `-Wl,--gdb-index` options in the compile command.
-3. `gdb-add-index programs/clickhouse` to generate .gdb_index section in ELF.
-4. `mv gdbinit ~/.gdbinit` 
+2. `mv gdbinit ~/.gdbinit` 
 
 Note: the .gdbinit file will make gdb register libcxx pretty printer, libcxx pretty printer  and ClickHouse pretty printer when gdb started.
 
-5. Run gdb and type `info pretty-printer`. You should see something like that:
+3. Run gdb and type `info pretty-printer`. You should see something like that:
 
 ```
 (gdb) info pretty-printer 
@@ -186,4 +184,4 @@ vtable for 'DB::IAST' @ 0xbecac50 (subobject @ 0x7fff30ea5458):
 * https://github.com/ClickHouse/ClickHouse/issues/13601
 * https://github.com/myrrc/clickhouse-devtools.git
 * https://sourceware.org/gdb/current/onlinedocs/gdb/Python-API.html
-
+* https://bugs.llvm.org/show_bug.cgi?id=34820 (related to compile with `-ggnu-pubnames` option and use lld with `-Wl,--gdb-index` to generate full valid .gdb_index section in ELF)
